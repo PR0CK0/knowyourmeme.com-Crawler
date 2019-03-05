@@ -7,3 +7,6 @@ Reddit, Twitter, etc.). The same goes for year; some users put in the content or
 spread origin year. The second pass in the class memeBODYCrawlerUpdated intends to remedy this.
 
 Over 4000 confirmed memes (Feb. 2019) are taken from the website to be crawled. Submission memes are ignored.
+
+Github took the html file and compressed it horrendously. If you want to view the html source (it's 2MB, a lot of tags), use this site: 
+https://www.cleancss.com/html-beautify/
