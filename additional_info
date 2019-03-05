@@ -1,0 +1,7 @@
+The initial pass on the knowyourmeme page takes info from a table on the right-hand side of the meme. This data, obviously, 
+is user-entered, and contains the meme: year, origin, tags and categories.
+
+Tags and categories can be taken literally and trusted as okay. Year and origin, however, are ambiguous. Some meme pages list
+the meme's content origin (be it a TV show, a book, a song) as the origin, while others list the meme's spread origin (like
+Reddit, Twitter, etc.). The same goes for year; some users put in the content origin year (like 1946 for Big Chungus) or the
+spread origin year. The second pass in the class memeBODYCrawlerUpdated intends to remedy this.
