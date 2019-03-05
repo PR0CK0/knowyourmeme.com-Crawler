@@ -1,5 +1,5 @@
 # knowyourmeme.com-Crawler
-This app crawls the website knowyourmeme.com's confirmed memes and stores the meme: title, content origin year, content origin, meme origin year, meme year, tags and category(ies). It uses the jsoup API. Written in Java. A lot of HTML parsing. The code in these classes is as decoupled and cohesive as possible, but some of it is inherently hardcoded.
+This app crawls the website knowyourmeme.com's confirmed memes and stores the meme: title, content origin year, content origin, meme origin year, meme year, tags and category(ies). It uses the jsoup API. Written in Java. A lot of HTML parsing; the code in these classes is as decoupled and cohesive as possible, but some of it is inherently hardcoded.
 
 The initial meme information is taken from a table on the right-hand side of each meme on a specific knowyourmeme.com page. A second pass for more specific information is done by parsing the user-written text for the meme. This allows the app to collect content/meme origin and year, if these are all available.
 
