@@ -6,6 +6,8 @@ import org.jsoup.select.Elements;
  * 
  * PROCKO - March 2019
  * 
+ * This class is a bit deprecated. Use MemeBODYCrawlerUpdated.java.
+ *
  * The point of this class is to gather more accurate data about each meme
  * from the knowyourmeme page, as the information in the column on the
  * righthand side of each meme can often be ambiguous, due to users. 
@@ -26,10 +28,10 @@ import org.jsoup.select.Elements;
  * 
  */
 
+@Deprecated
 public class MemeBODYCrawler
 {
 	// So much redundancy, should have done a predicate but idc
-	// I feel braindead writing this...
 	
 	public MemeBODYCrawler(Document anHtmlPage, Meme aMeme)
 	{
