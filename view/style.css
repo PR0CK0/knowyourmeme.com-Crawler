@@ -1,0 +1,116 @@
+.root
+{
+	-fx-background-color: DARKSLATEGREY;
+}
+
+.text-area .content
+{
+	-fx-background-color: BLACK;
+}
+
+.text-area
+{
+	-fx-text-fill: WHITE;
+	-fx-font-size: 1.2em;
+	-fx-font-weight: BOLD;
+}
+
+.label
+{
+	-fx-text-fill: WHITE; 
+	-fx-font-weight: BOLD;
+	-fx-font-size: 1.2em;
+}
+
+.scroll-pane
+{
+	-fx-background: BLACK;
+}
+
+Button
+{
+	-fx-background-radius: 0, 0, 0, 0;
+	-fx-border-color: #99cccc;
+	-fx-background-color: #99cccc;
+	-fx-font-weight: BOLD;
+	-fx-font-size: 1.1em;
+}
+
+.text-field
+{
+	-fx-background-radius: 0, 0, 0, 0;
+	-fx-font-weight: BOLD;
+}
+
+.text-field:hover,
+.button:hover,
+.tab:hover,
+.scroll-bar:hover,
+.scroll-bar:pressed 
+{
+	-fx-effect: dropshadow(gaussian, #000000, 5, 0, 1, 2);
+}
+
+.tab
+{
+	-fx-background-radius: 0, 0, 0, 0;
+	-fx-font-weight: BOLD;
+	-fx-font-size: 1.2em;
+}
+
+.scroll-bar .track
+{
+	-fx-background-radius: 0,0,0,0;
+}
+
+.scroll-bar .increment-button:pressed,
+.scroll-bar .decrement-button:pressed,
+.scroll-bar .thumb:pressed  
+{
+	-fx-background-color: #9F9F9F;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button 
+{
+    -fx-background-color: #C7C7C7;
+	-fx-background-insets: 0,0,0;
+	-fx-background-radius: 0,0,0,0;
+}
+
+.scroll-bar .thumb 
+{
+	-fx-background-color: #B0B0B0;
+	-fx-background-insets: 0,0,0;
+	-fx-background-radius: 0,0,0,0;
+}
+
+.list-cell:filled:selected:focused, 
+.list-cell:filled:selected,
+.list-cell:filled:hover 
+{
+    -fx-background-color: #2B2B2B;
+    -fx-text-fill: #FFFFFF;
+}
+
+.list-cell
+{
+	-fx-font-weight: BOLD;
+}
+
+.list-view
+{
+	-fx-background-color: #DDDDDD;
+}
+
+.list-cell:even 
+{
+    -fx-text-fill: #000000;
+    -fx-background-color: #7E7E7E;
+}
+
+.list-cell:odd 
+{
+    -fx-text-fill: #000000;
+    -fx-background-color: #8E8E8E;
+}
