@@ -166,7 +166,6 @@ public class Entry extends BorderPane
 		{
 			if (crawlAllInfoValid())
 			{				
-				System.out.println("Starting");
 				// Do the heavy loading on a separate thread to prevent UI from freezing
 				executorService.execute(new CrawlUIThread(this, Long.valueOf(tfDelay.getText()), 
 						Integer.valueOf(tfStartIndex.getText()), Integer.valueOf(tfEndIndex.getText()), new MemeURLGrabber()));
