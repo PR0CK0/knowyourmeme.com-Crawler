@@ -15,9 +15,7 @@ import javafx.util.Duration;
 public class WaitPopup extends Stage
 {	
 	public WaitPopup(int waitDuration, int start, int end)
-	{
-		System.out.println("aa " + start + " " + end);
-		
+	{		
 		this.waitDuration = waitDuration;
 		this.start = start;
 		this.end = end;
