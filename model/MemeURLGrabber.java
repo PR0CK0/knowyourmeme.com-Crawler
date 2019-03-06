@@ -17,8 +17,8 @@ public class MemeURLGrabber implements Callable<String[]>
 	public String[] call()
 	{
 		try
-		{						
-			File input = new File(fileName);
+		{
+			File input = loadFile();
 			htmlPage = Jsoup.parse(input, "UTF-8", "http://example.com/");
 			getMemeURLSFromPage();
 		}
@@ -28,6 +28,66 @@ public class MemeURLGrabber implements Callable<String[]>
 		}
 		
 		return memeURLS.toArray(new String[0]);
+	}
+	
+	private File loadFile()
+	{
+		// Brute force load the html file using multiple ways:
+		File input = null;
+		
+		// Try loading it if it was inside model folder
+		try
+		{
+			input = new File(this.getClass().getResource(fileName).getPath());
+			System.out.println("Loaded url file cause inside of model directory");
+		}
+		catch(Exception e)
+		{
+		}
+		
+		// Short circuit if we loaded
+		if(input != null)
+			return input;
+		
+		// Try loading it if it was inside view folder
+		try
+		{
+			input = new File(this.getClass().getResource("../view/" + fileName).getPath());
+			System.out.println("Loaded url file cause inside of view directory");
+		}
+		catch(Exception e)
+		{
+		}
+		
+		// Short circuit if we loaded
+		if(input != null)
+			return input;
+		
+		// Try loading it if it was outside model folder (same directory as jar)
+		try
+		{
+			input = new File(this.getClass().getResource("../" + fileName).getPath());
+			System.out.println("Loaded url file cause of same directory of jar");
+		}
+		catch(Exception e)
+		{
+		}
+		
+		// Short circuit if we loaded
+		if(input != null)
+			return input;
+		
+		// Try loading it if it was outside the same directory of the jar
+		try
+		{
+			input = new File(this.getClass().getResource("../../" + fileName).getPath());
+			System.out.println("Loaded url file cause of outside of same directory of jar");
+		}
+		catch(Exception e)
+		{
+		}
+		
+		return input;
 	}
 	
 	private void getMemeURLSFromPage()
