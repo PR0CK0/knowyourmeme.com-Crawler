@@ -47,12 +47,12 @@ class CrawlUIThread implements Runnable
 			catch (InterruptedException e)
 			{
 				e.printStackTrace();
-				Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError url grabbing."));
+				Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError URL grabbing."));
 			}
 			catch (ExecutionException e)
 			{
 				e.printStackTrace();
-				Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError url grabbing."));
+				Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError URL grabbing."));
 			}
 		}
 		
@@ -70,7 +70,7 @@ class CrawlUIThread implements Runnable
 		catch (InterruptedException | ExecutionException e)
 		{
 			e.printStackTrace();
-			Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError crawling."));
+			Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError crawling memes (called from CrawlUIThread)."));
 		}
 		
 		final Meme[] memesFinal = memes;
