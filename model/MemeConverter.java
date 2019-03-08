@@ -18,7 +18,9 @@ public class MemeConverter
 		// Column Order: Name,Type,ContentOrigin,OriginYear,MemeOrigin,MemeYear,Categories,Tags
 		
 		// Name
-		builder.append(aMeme.getName());
+		// Remove spaces, keep it alphanumeric with underscore only to fit the CSV
+		String modifiedName = aMeme.getName().replaceAll("[^a-zA-Z0-9_ ]", "").replaceAll("\\s", "").trim();
+		builder.append(modifiedName);
 		builder.append(",");
 		
 		// Type
