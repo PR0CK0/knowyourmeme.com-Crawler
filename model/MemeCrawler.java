@@ -90,7 +90,7 @@ public class MemeCrawler implements Callable<Meme[]>
 		}
 		catch (NumberFormatException e)
 		{
-			meme.setOriginYear(0);
+			meme.setOriginYear(-1);
 		}
 	}
 	
