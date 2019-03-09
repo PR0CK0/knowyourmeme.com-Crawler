@@ -55,7 +55,14 @@ public class MemeCrawler implements Callable<Meme[]>
 				break;
 			}
 			
-			Thread.sleep(sleepDuration);
+			if((i+1) % 100 == 0) // Long sleep after 100 memes
+			{
+				Thread.sleep(1200000); // 20 minutes in milliseconds (20 * 60 * 1000)
+			}
+			else
+			{
+				Thread.sleep(sleepDuration);
+			}
 		}
 		
 		return memes;
