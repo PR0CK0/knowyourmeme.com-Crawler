@@ -61,7 +61,7 @@ public class Entry extends BorderPane
 		tfMemeYear = new TextField("0");
 		tfMemeYear.setMaxWidth(50);
 		
-		tfDelay = new TextField("2000");
+		tfDelay = new TextField("30000");
 		tfStartIndex = new TextField("0");
 		tfEndIndex = new TextField("500");
 		tfDelay.setPromptText("# of ms delay");
@@ -135,7 +135,7 @@ public class Entry extends BorderPane
 				Platform.runLater(() ->
 				{
 					super.updateItem(item, empty);
-					if(empty)
+					if(empty || item == null)
 					{
 						setText(null);
 					}
