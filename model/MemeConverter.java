@@ -19,20 +19,28 @@ public class MemeConverter
 		
 		// Name
 		// Remove spaces, keep it alphanumeric with underscore only to fit the CSV
-		String modifiedName = aMeme.getName().replaceAll("[^a-zA-Z0-9_ ]", "").replaceAll("\\s", "").trim();
+		String modifiedName = removeSpaces(onlyAlphanumeric(aMeme.getName()));
 		builder.append(modifiedName);
 		builder.append(",");
 		
 		// Type
-		builder.append(aMeme.getType());
+		// Check if we have a type (empty string is unassigned)
+		if(!aMeme.getType().isEmpty())
+		{
+			String type = onlyAlphanumeric(aMeme.getType());
+			builder.append(type);
+		}
 		builder.append(",");
 		
 		// Content Origin (comma separated so needs quotation to not break column order)
 		builder.append("\"");
 		for(int i = 0; i < aMeme.getContentOrigin().length; i++)
 		{
+			// Remove spaces and double quotation marks
 			String contentOrigin = aMeme.getContentOrigin()[i];
-			builder.append(contentOrigin);
+			String modifiedContentOrigin = onlyAlphanumeric(contentOrigin); 
+			builder.append(modifiedContentOrigin);
+			
 			if(i != aMeme.getContentOrigin().length - 1) // if not last element, add a comma
 			{
 				builder.append(",");
@@ -42,15 +50,28 @@ public class MemeConverter
 		builder.append(",");
 		
 		// Origin Year
-		builder.append(aMeme.getOriginYear());
+		// Check if we have a valid year (-1 is unassigned)
+		if(aMeme.getOriginYear() != -1)
+		{
+			builder.append(aMeme.getOriginYear());
+		}
 		builder.append(",");
 		
 		// Meme Origin
-		builder.append(aMeme.getMemeOrigin());
+		// Check if we have a meme origin (empty string is unassigned)
+		if(!aMeme.getMemeOrigin().isEmpty())
+		{
+			String memeOrigin = onlyAlphanumeric(aMeme.getMemeOrigin());
+			builder.append(memeOrigin);
+		}
 		builder.append(",");
 		
 		// Meme Year
-		builder.append(aMeme.getMemeYear());
+		// Check if we have a valid year (-1 is unassigned)
+		if(aMeme.getMemeYear() != -1)
+		{
+			builder.append(aMeme.getMemeYear());
+		}
 		builder.append(",");
 		
 		// Categories (syntax tags) (comma separated so needs quotation to not break column order)
@@ -58,7 +79,9 @@ public class MemeConverter
 		for(int i = 0; i < aMeme.getCategories().length; i++)
 		{
 			String category = aMeme.getCategories()[i];
-			builder.append(category);
+			String modifiedCategory = removeSpaces(onlyAlphanumeric(category));
+			builder.append(modifiedCategory);
+			
 			if(i != aMeme.getCategories().length - 1) // if not last element, add a comma
 			{
 				builder.append(",");
@@ -72,7 +95,9 @@ public class MemeConverter
 		for(int i = 0; i < aMeme.getTags().length; i++)
 		{
 			String tag = aMeme.getTags()[i];
-			builder.append(tag);
+			String modifiedTag = onlyAlphanumeric(tag);
+			builder.append(modifiedTag);
+			
 			if(i != aMeme.getTags().length - 1) // if not last element, add a comma
 			{
 				builder.append(",");
@@ -117,7 +142,7 @@ public class MemeConverter
 		StringBuilder builder = new StringBuilder();
 		
 		// Remove spaces, keep it alphanumeric with underscore only to fit the RDF's XML
-		String modifiedName = aMeme.getName().replaceAll("[^a-zA-Z0-9_ ]", "").replaceAll("\\s", "").trim();
+		String modifiedName = removeSpaces(onlyAlphanumeric(aMeme.getName()));
 		
 		// Start the XML with the name of the meme
 		builder.append(String.format(
@@ -133,23 +158,29 @@ public class MemeConverter
 		// Syntax Tags (called Categories)
 		for(String syntaxTag : aMeme.getCategories())
 		{
-			builder.append(String.format("\t<syntaxTag rdf:resource=\"%s#%sSyntaxTag\"/>\n", ONTOLOGY_IRI, syntaxTag));
+			String modifiedCategory = removeSpaces(onlyAlphanumeric(syntaxTag));
+			builder.append(String.format("\t<syntaxTag rdf:resource=\"%s#%sSyntaxTag\"/>\n",
+					ONTOLOGY_IRI,
+					modifiedCategory));
 		}
 		
 		// Check if we have a type (empty string is unassigned)
 		if(!aMeme.getType().isEmpty())
 		{
+			String type = onlyAlphanumeric(aMeme.getType());
 			builder.append(String.format(
-					"\t<memeType rdf:resource=\"%s#%sType\"/>\n", ONTOLOGY_IRI,
-					aMeme.getType()));
+					"\t<memeType rdf:resource=\"%s#%sType\"/>\n",
+					ONTOLOGY_IRI,
+					type));
 		}
 		
 		// Check if we have a content origin (empty string is unassigned)
 		for(String contentOrigin : aMeme.getContentOrigin())
 		{
+			String modifiedContentOrigin = onlyAlphanumeric(contentOrigin);
 			builder.append(String.format(
 					"\t<contentOrigin rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</contentOrigin>\n",
-					contentOrigin));
+					modifiedContentOrigin));
 		}
 		
 		// Check if we have a valid year (-1 is unassigned)
@@ -164,9 +195,10 @@ public class MemeConverter
 		// Check if we have a meme origin (empty string is unassigned)
 		if(!aMeme.getMemeOrigin().isEmpty())
 		{
+			String memeOrigin = onlyAlphanumeric(aMeme.getMemeOrigin());
 			builder.append(String.format(
 					"\t<memeOrigin rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</memeOrigin>\n",
-					aMeme.getMemeOrigin()));
+					memeOrigin));
 		}
 		
 		// Check if we have a valid year (-1 is unassigned)
@@ -180,9 +212,10 @@ public class MemeConverter
 		// Semantic Tags (called Tags)
 		for(String semanticTag : aMeme.getTags())
 		{
+			String modifiedTag = onlyAlphanumeric(semanticTag);
 			builder.append(String.format(
 					"\t<semanticTag rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</semanticTag>\n",
-					semanticTag));
+					modifiedTag));
 		}
 		
 		// End XML element
@@ -215,6 +248,16 @@ public class MemeConverter
 		}
 		
 		return builder.toString();
+	}
+	
+	private static String removeSpaces(String s)
+	{
+		return s.replaceAll("\\s", "").trim();
+	}
+	
+	private static String onlyAlphanumeric(String s)
+	{
+		return s.replaceAll("[^a-zA-Z0-9_ ]", "").trim();
 	}
 	
 	private static final String ONTOLOGY_IRI = "http://erau.edu/ontology/meme.owl";
