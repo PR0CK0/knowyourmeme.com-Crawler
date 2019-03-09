@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -24,13 +25,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import model.Meme;
 import model.MemeConverter;
@@ -374,7 +372,7 @@ public class Entry extends BorderPane
 		{
 			try
 			{
-				int a = Integer.valueOf(newValue);
+				Integer.valueOf(newValue);
 			}
 			catch(NumberFormatException e)
 			{
@@ -409,7 +407,7 @@ public class Entry extends BorderPane
 		{
 			try
 			{
-				int a = Integer.valueOf(newValue);
+				Integer.valueOf(newValue);
 			}
 			catch(NumberFormatException e)
 			{
