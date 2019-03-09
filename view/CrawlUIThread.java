@@ -72,7 +72,10 @@ class CrawlUIThread implements Runnable
 			Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError crawling memes (called from CrawlUIThread)."));
 		}
 		
-		final Meme[] memesFinal = memes;
+		// Remove null memes (if we encountered an error)
+		final Meme[] memesFinal = Arrays.stream(memes)
+								.filter(meme -> meme != null)
+								.toArray(Meme[]::new);
 		
 		Platform.runLater(() ->
 		{
