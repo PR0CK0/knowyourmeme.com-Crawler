@@ -5,6 +5,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import javafx.application.Platform;
 import view.ErrorPopup;
 
 public class MemeCrawler implements Callable<Meme[]>
@@ -25,7 +27,6 @@ public class MemeCrawler implements Callable<Meme[]>
 			try
 			{
 				meme = new Meme();
-				memes[i] = meme;
 				htmlPage = Jsoup.connect(urls[i]).get();
 				noMemeCategories = 0;
 				
@@ -40,18 +41,27 @@ public class MemeCrawler implements Callable<Meme[]>
 				getCategories(htmlEntryBodySection);	
 				
 				new MemeBODYCrawlerUpdated(htmlPage, meme).findCorrectMemeInfo();
+				
+				// Only add the meme if there was no errors
+				memes[i] = meme;
 			}
 			catch (HttpStatusException e)
 			{
 				e.printStackTrace();
-				new ErrorPopup("You got banned. You crawled too many memes too fast. "
-						+ "Get a different IP and slow it down.\n" + e.getMessage());
+				Platform.runLater(() ->
+				{
+					new ErrorPopup("You got banned. You crawled too many memes too fast. "
+							+ "Get a different IP and slow it down.\n" + e.getMessage());
+				});
 				break;
 			}
 			catch(Exception e)
 			{
 				e.printStackTrace();
-				new ErrorPopup("Error in crawling! (Called directly in MemeCrawler)\n" + e.getMessage());
+				Platform.runLater(() ->
+				{
+					new ErrorPopup("Error in crawling! (Called directly in MemeCrawler)\n" + e.getMessage());
+				});
 				break;
 			}
 			
