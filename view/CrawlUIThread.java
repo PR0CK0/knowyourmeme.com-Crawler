@@ -42,6 +42,7 @@ class CrawlUIThread implements Runnable
 			try
 			{
 				urls = grabbedURLs.get();
+				System.out.println("There are " + urls.length + " memes in the HTML file.");
 				urls = Arrays.copyOfRange(urls, startIndex, endIndex);
 			}
 			catch (InterruptedException e)
