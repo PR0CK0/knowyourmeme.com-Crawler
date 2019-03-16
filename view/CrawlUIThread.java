@@ -58,7 +58,7 @@ class CrawlUIThread implements Runnable
 		
 		Future<Meme[]> crawler = entry.getExecutorService().submit(new MemeCrawler(delay, urls));
 		
-		int expectedDuration = (int) ((delay + 0.5) * (endIndex - startIndex + 1));
+		int expectedDuration = (int) ((delay/1000.0 + 0.5) * (endIndex - startIndex + 1));
 		Platform.runLater(() -> new WaitPopup(expectedDuration, startIndex, endIndex));
 		
 		Meme[] memes = null;
