@@ -5,7 +5,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import javafx.application.Platform;
 import view.ErrorPopup;
 
@@ -27,7 +26,7 @@ public class MemeCrawler implements Callable<Meme[]>
 			try
 			{
 				meme = new Meme();
-				htmlPage = Jsoup.connect(urls[i]).get();
+				htmlPage = Jsoup.connect(urls[i]).get();				
 				noMemeCategories = 0;
 				
 				Element htmlEntryBodySection = htmlPage.getElementById("entry_body").child(0);
@@ -42,37 +41,49 @@ public class MemeCrawler implements Callable<Meme[]>
 				
 				new MemeBODYCrawlerUpdated(htmlPage, meme).findCorrectMemeInfo();
 				
-				// Only add the meme if there was no errors
-				memes[i] = meme;
+				memes[i] = meme;	
 			}
 			catch (HttpStatusException e)
 			{
-				e.printStackTrace();
-				Platform.runLater(() ->
+				try
+				{					
+					// Additional try/catch because of: https://knowyourmeme.com/memes/people/memesaysstuff,
+					// a deleted meme that threw a 404- the same error as an IP ban
+					
+					String arbitraryGuaranteedMemeURL = "https://knowyourmeme.com/memes/is-this-a-pigeon";
+					Document banTest = Jsoup.connect(arbitraryGuaranteedMemeURL).get();
+				}
+				catch (HttpStatusException e2)
 				{
-					new ErrorPopup("You got banned. You crawled too many memes too fast. "
-							+ "Get a different IP and slow it down.\n" + e.getMessage());
+					Platform.runLater(() -> 
+					{
+						new ErrorPopup("Your IP is banned from the site. You crawled too many memes too fast. "
+								+ "Get a different IP and slow it down.\n" + e2.getMessage());
+					});
+							
+					break;
+				}
+				
+				final String badURL = urls[i];
+				Platform.runLater(() -> 
+				{
+					new ErrorPopup("Bad URL found: " + badURL
+							+ "\nMost likely the meme was deleted from the site. Not your problem."
+							+ "\nJust note that there will be an empty meme in the list now. The crawl "
+							+ "will still continue. Do not worry.");
 				});
-				break;
+
+				Meme emptyMeme = new Meme();
+				memes[i] = emptyMeme;
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				e.printStackTrace();
-				Platform.runLater(() ->
-				{
-					new ErrorPopup("Error in crawling! (Called directly in MemeCrawler)\n" + e.getMessage());
-				});
+				Platform.runLater(() -> new ErrorPopup("Error in crawling! (Called directly in MemeCrawler)\n" + e.getMessage()));
 				break;
 			}
 			
-			if((i+1) % 100 == 0) // Long sleep after 100 memes
-			{
-				Thread.sleep(1200000); // 20 minutes in milliseconds (20 * 60 * 1000)
-			}
-			else
-			{
-				Thread.sleep(sleepDuration);
-			}
+			Thread.sleep(sleepDuration);
 		}
 		
 		return memes;
