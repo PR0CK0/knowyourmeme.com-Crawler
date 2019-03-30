@@ -19,7 +19,7 @@ public class MemeConverter
 		
 		// Name
 		// Remove spaces, keep it alphanumeric with underscore only to fit the CSV
-		String modifiedName = removeSpaces(onlyAlphanumeric(aMeme.getName()));
+		String modifiedName = removeSpaces(sanitize(aMeme.getName()));
 		builder.append(modifiedName);
 		builder.append(",");
 		
@@ -27,7 +27,7 @@ public class MemeConverter
 		// Check if we have a type (empty string is unassigned)
 		if(!aMeme.getType().isEmpty())
 		{
-			String type = onlyAlphanumeric(aMeme.getType());
+			String type = sanitize(aMeme.getType());
 			builder.append(type);
 		}
 		builder.append(",");
@@ -38,7 +38,7 @@ public class MemeConverter
 		{
 			// Remove spaces and double quotation marks
 			String contentOrigin = aMeme.getContentOrigin()[i];
-			String modifiedContentOrigin = onlyAlphanumeric(contentOrigin); 
+			String modifiedContentOrigin = sanitize(contentOrigin); 
 			builder.append(modifiedContentOrigin);
 			
 			if(i != aMeme.getContentOrigin().length - 1) // if not last element, add a comma
@@ -61,7 +61,7 @@ public class MemeConverter
 		// Check if we have a meme origin (empty string is unassigned)
 		if(!aMeme.getMemeOrigin().isEmpty())
 		{
-			String memeOrigin = onlyAlphanumeric(aMeme.getMemeOrigin());
+			String memeOrigin = sanitize(aMeme.getMemeOrigin());
 			builder.append(memeOrigin);
 		}
 		builder.append(",");
@@ -79,7 +79,7 @@ public class MemeConverter
 		for(int i = 0; i < aMeme.getCategories().length; i++)
 		{
 			String category = aMeme.getCategories()[i];
-			String modifiedCategory = removeSpaces(onlyAlphanumeric(category));
+			String modifiedCategory = removeSpaces(sanitize(category));
 			builder.append(modifiedCategory);
 			
 			if(i != aMeme.getCategories().length - 1) // if not last element, add a comma
@@ -95,7 +95,7 @@ public class MemeConverter
 		for(int i = 0; i < aMeme.getTags().length; i++)
 		{
 			String tag = aMeme.getTags()[i];
-			String modifiedTag = onlyAlphanumeric(tag);
+			String modifiedTag = sanitize(tag);
 			builder.append(modifiedTag);
 			
 			if(i != aMeme.getTags().length - 1) // if not last element, add a comma
@@ -142,7 +142,7 @@ public class MemeConverter
 		StringBuilder builder = new StringBuilder();
 		
 		// Remove spaces, keep it alphanumeric with underscore only to fit the RDF's XML
-		String modifiedName = removeSpaces(onlyAlphanumeric(aMeme.getName()));
+		String modifiedName = removeSpaces(sanitize(aMeme.getName()));
 		
 		// Start the XML with the name of the meme
 		builder.append(String.format(
@@ -158,7 +158,7 @@ public class MemeConverter
 		// Syntax Tags (called Categories)
 		for(String syntaxTag : aMeme.getCategories())
 		{
-			String modifiedCategory = removeSpaces(onlyAlphanumeric(syntaxTag));
+			String modifiedCategory = removeSpaces(sanitize(syntaxTag));
 			builder.append(String.format("\t<syntaxTag rdf:resource=\"%s#%sSyntaxTag\"/>\n",
 					ONTOLOGY_IRI,
 					modifiedCategory));
@@ -167,7 +167,7 @@ public class MemeConverter
 		// Check if we have a type (empty string is unassigned)
 		if(!aMeme.getType().isEmpty())
 		{
-			String type = onlyAlphanumeric(aMeme.getType());
+			String type = sanitize(aMeme.getType());
 			builder.append(String.format(
 					"\t<memeType rdf:resource=\"%s#%sType\"/>\n",
 					ONTOLOGY_IRI,
@@ -177,7 +177,7 @@ public class MemeConverter
 		// Check if we have a content origin (empty string is unassigned)
 		for(String contentOrigin : aMeme.getContentOrigin())
 		{
-			String modifiedContentOrigin = onlyAlphanumeric(contentOrigin);
+			String modifiedContentOrigin = sanitize(contentOrigin);
 			builder.append(String.format(
 					"\t<contentOrigin rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</contentOrigin>\n",
 					modifiedContentOrigin));
@@ -195,7 +195,7 @@ public class MemeConverter
 		// Check if we have a meme origin (empty string is unassigned)
 		if(!aMeme.getMemeOrigin().isEmpty())
 		{
-			String memeOrigin = onlyAlphanumeric(aMeme.getMemeOrigin());
+			String memeOrigin = sanitize(aMeme.getMemeOrigin());
 			builder.append(String.format(
 					"\t<memeOrigin rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</memeOrigin>\n",
 					memeOrigin));
@@ -212,7 +212,7 @@ public class MemeConverter
 		// Semantic Tags (called Tags)
 		for(String semanticTag : aMeme.getTags())
 		{
-			String modifiedTag = onlyAlphanumeric(semanticTag);
+			String modifiedTag = sanitize(semanticTag);
 			builder.append(String.format(
 					"\t<semanticTag rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</semanticTag>\n",
 					modifiedTag));
@@ -258,6 +258,42 @@ public class MemeConverter
 	private static String onlyAlphanumeric(String s)
 	{
 		return s.replaceAll("[^a-zA-Z0-9_ ]", "").trim();
+	}
+	
+	private static String fixAmpersand(String s)
+	{
+		return s.replaceAll("&", " and ").trim();
+	}
+	
+	private static String removeHTML(String s)
+	{
+		int leftAnglePosition = -1;
+		int rightAnglePosition = -1;
+		String result = s;
+		
+		do
+		{
+			leftAnglePosition = result.indexOf("<");
+			rightAnglePosition = result.indexOf(">");
+			
+			// In a perfect world, where each < is happily married to >
+			// And, the law states < always precedes > because ladies first.
+			// If this law is broken, the monster will prevail and consume us all
+			// His name? Deathlord Eclipserino
+			if(leftAnglePosition != -1 && rightAnglePosition != -1)
+			{
+				String htmlPortion = result.substring(leftAnglePosition, rightAnglePosition+1);
+				result = result.replace(htmlPortion, "");
+			}
+		}
+		while(leftAnglePosition != -1);
+		
+		return result;
+	}
+	
+	private static String sanitize(String s)
+	{
+		return removeHTML(fixAmpersand(onlyAlphanumeric(s)));
 	}
 	
 	private static final String ONTOLOGY_IRI = "http://erau.edu/ontology/meme.owl";
