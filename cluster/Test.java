@@ -33,9 +33,12 @@ public class Test extends Application
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
+		final int width = 1280;
+		final int height = 960;
+		
 		Pane circlesPane = new Pane();
-		circlesPane.setMinWidth(640);
-		circlesPane.setMinHeight(430);
+		circlesPane.setMinWidth(width);
+		circlesPane.setMinHeight(height-50);
 		Pane clustersPane = new Pane();
 		
 		Button clearButton = new Button("Clear");
@@ -78,7 +81,7 @@ public class Test extends Application
 		scene.setOnMouseClicked(e ->
 		{
 			// Spawn circles on LMB
-			if(!isClustering && e.getButton() == MouseButton.PRIMARY && e.getY() < 430)
+			if(!isClustering && e.getButton() == MouseButton.PRIMARY && e.getY() < height-50)
 			{
 				Circle circle = new Circle(8, Color.WHITE);
 				circle.setCenterX(e.getX());
@@ -97,8 +100,8 @@ public class Test extends Application
 		});
 		
 		primaryStage.setScene(scene);
-		primaryStage.setWidth(640);
-		primaryStage.setHeight(480);
+		primaryStage.setWidth(width);
+		primaryStage.setHeight(height);
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("K-Means Test");
 		primaryStage.show();
