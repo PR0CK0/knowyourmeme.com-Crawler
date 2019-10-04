@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -61,7 +60,7 @@ public class Entry extends BorderPane
 		tfMemeYear = new TextField("0");
 		tfMemeYear.setMaxWidth(50);
 		
-		tfDelay = new TextField("30000");
+		tfDelay = new TextField("2000");
 		tfStartIndex = new TextField("0");
 		tfEndIndex = new TextField("500");
 		tfDelay.setPromptText("# of ms delay");
@@ -116,6 +115,10 @@ public class Entry extends BorderPane
 		// CENTER
 		HBox hboxCenter = new HBox(lvMemes, tpFormats);
 		taPlainText.setEditable(false);
+		
+		// new
+		taPlainText.setWrapText(true);
+		
 		spPlainText.setFitToWidth(true);
 		spPlainText.setFitToHeight(true);
 		taRDF.setEditable(false);
@@ -135,7 +138,7 @@ public class Entry extends BorderPane
 				Platform.runLater(() ->
 				{
 					super.updateItem(item, empty);
-					if(empty || item == null)
+					if(empty)
 					{
 						setText(null);
 					}
@@ -372,7 +375,7 @@ public class Entry extends BorderPane
 		{
 			try
 			{
-				Integer.valueOf(newValue);
+				int a = Integer.valueOf(newValue);
 			}
 			catch(NumberFormatException e)
 			{
@@ -407,7 +410,7 @@ public class Entry extends BorderPane
 		{
 			try
 			{
-				Integer.valueOf(newValue);
+				int a = Integer.valueOf(newValue);
 			}
 			catch(NumberFormatException e)
 			{

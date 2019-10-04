@@ -8,13 +8,18 @@ public class Meme
 	public String toString()
 	{
 		return  "Name = " + name +
+				"\nURL = " + memeURL +
 				"\nOrigin Year = " + contentYear + 
 				"\nContent Origin = " + Arrays.toString(contentOrigin) +
 				"\nTags = " + Arrays.toString(tags) +
 				"\nCategories = " + Arrays.toString(categories) +
 				"\nMeme Year = " + memeYear +
 				"\nMeme Origin = " + memeOrigin +
-				"\nType = " + type;
+				"\nType = " + type +
+				"\n\nDirect Image Links = " + Arrays.toString(imageLinks) +
+				"\n\nExternal Reference Links = " + Arrays.toString(externalReferenceLinks) +
+				"\n\nText Body = " + memeText +
+				"\n\nLinks In Meme Text = " + Arrays.toString(linksInMemeText);
 	}
 
 	public int getMemeYear() 
@@ -27,7 +32,7 @@ public class Meme
 		this.memeYear = memeYear;
 		
 		// TEMPORARY: Deduce type from meme year when supplied
-		if(memeYear >= 2012)
+		if (memeYear >= 2012)
 		{
 			setType("Dank");
 		}
@@ -37,6 +42,66 @@ public class Meme
 		}
 	}
 
+	// new
+	public void setMemeURL(String memeURL)
+	{
+		this.memeURL = memeURL;
+	}
+	
+	// new
+	public String getMemeURL()
+	{
+		return memeURL;
+	}
+	
+	// new
+	public void setMemeText(String textBody)
+	{
+		memeText = textBody;
+	}
+	
+	// new
+	public String getMemeText()
+	{
+		return memeText;
+	}
+	
+	// new
+	public void setLinksInMemeText(String[] linksInMemeText)
+	{
+		this.linksInMemeText = linksInMemeText;
+	}
+	
+	// new
+	public String[] getLinksInMemeText()
+	{
+		return linksInMemeText;
+	}
+	
+	// new
+	public void setImageLinks(String[] imageLinks)
+	{
+		this.imageLinks = imageLinks;
+	}
+	
+	// new
+	public String[] getImageLinks()
+	{
+		return imageLinks;
+	}
+	
+	// new
+	public void setExternalReferenceLinks(String[] externalReferenceLinks)
+	{
+		this.externalReferenceLinks = externalReferenceLinks;
+	}
+	
+	// new
+	public String[] getExternalReferenceLinks()
+	{
+		return externalReferenceLinks;
+	}
+	
 	public String getMemeOrigin() 
 	{
 		return memeOrigin;
@@ -114,5 +179,12 @@ public class Meme
 	private int memeYear = -1;
 	private String memeOrigin = "";
 	private String[] tags = {};
-	private String type = "";
+	private String type = "Unassigned";
+	
+	// new
+	private String memeURL = "";
+	private String memeText = "";
+	private String[] linksInMemeText = {};
+	private String[] imageLinks = {};
+	private String[] externalReferenceLinks = {};
 }

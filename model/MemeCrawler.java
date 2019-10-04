@@ -33,7 +33,16 @@ public class MemeCrawler implements Callable<Meme[]>
 				
 				checkIfMemeHasCategoriesElement(htmlEntryBodySection);
 				
+				meme.setMemeURL(htmlPage.baseUri());
+				
 				getMemeName();
+				// new
+				getMemeText();
+				getLinksInMemeText();
+				getImagesInTextBody();
+				// meh
+				getExternalReferences();
+				
 				getContentYear(htmlEntryBodySection);
 				getContentOrigin();
 				getTags(htmlEntryBodySection);
@@ -94,6 +103,94 @@ public class MemeCrawler implements Callable<Meme[]>
 		String name = htmlPage.getElementsByTag("title").text();
 		int titleSuffixLength = 17;
 		meme.setName(name.substring(0, name.length() - titleSuffixLength));
+	}
+	
+	// new
+	private void getMemeText()
+	{
+		Elements textBody = htmlPage.getElementsByClass("bodycopy");
+		String text = textBody.text();
+		
+		meme.setMemeText(textBody.text().substring(6, textBody.text().length()));
+	}
+	
+	// new
+	private void getLinksInMemeText()
+	{
+		Elements links = htmlPage.getElementsByClass("bodycopy").select("a[href~=/memes/.*]");
+		
+		// lazy
+		int i = 0;
+		String[] linksArr = new String[links.size()];
+		for (Element ele : links)
+		{
+			String link = ele.attr("abs:href");
+			
+//			System.out.println(link);
+			
+			// & symbol is death to an RDF file
+			if (!link.contains("&"))
+			{
+				linksArr[i] = link;
+			}
+			i++;				
+		}
+		
+		meme.setLinksInMemeText(linksArr);
+	}
+	
+	// new
+	private void getExternalReferences()
+	{
+		Elements links = htmlPage.getElementsByClass("footnote-text").select("a");
+		
+		// lazy
+		int i = 0;
+		String[] linksArr = new String[links.size()];
+		for (Element ele : links)
+		{
+			String link = ele.attr("href");
+			linksArr[i] = link;
+			i++;
+		}
+		
+		meme.setExternalReferenceLinks(linksArr);
+	}
+	
+	// new
+	private void getImagesInTextBody()
+	{
+		// =\"[0-9]+(px)?\"
+		Elements images = htmlPage.select("img[style~=(height.+)|(max-width.+);]");
+//		Elements images = htmlPage.select("img[class=kym-image]");
+		
+		// lazy af
+		int i = 0;
+		
+		String[] imageLinks = new String[images.size()];
+		
+		for (Element ele : images)
+		{
+			String imageLink = ele.attr("data-src");
+			imageLinks[i] = imageLink;
+			
+			// this saves images to disk; works fine
+//			try
+//			{
+//				URL url = new URL(imageLink);
+//				BufferedImage img = ImageIO.read(url);
+//				File file = new File("D:\\test\\" + meme.getName() + "" + i + ".jpg");
+//				ImageIO.write(img, "jpg", file);
+//			}
+//			catch (Exception e1)
+//			{
+//				System.out.println("Oof.");
+//			}
+//			
+			i++;
+		}
+		
+		meme.setImageLinks(imageLinks);
 	}
 	
 	private void getContentYear(Element htmlEntryBody)
