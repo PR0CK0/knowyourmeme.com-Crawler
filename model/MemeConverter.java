@@ -163,7 +163,7 @@ public class MemeConverter
 		{
 			builder.append(String.format(
 					// rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\"
-					"  <relatedMeme>http://erau-semantic-research.com/2019/memo/0.1/%sMeme</relatedMeme>\n",
+					"  <relatedMeme rdf:resource=\"http://erau-semantic-research.com/2019/memo/0.1/%sMeme\"/>\n",
 					mintIRI(url)));
 		}
 		
