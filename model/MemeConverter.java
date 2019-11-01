@@ -37,6 +37,8 @@ public class MemeConverter
 			}
 		}
 		
+		System.out.println("base IRI is [" + baseIRI + "]");
+		
 		return baseIRI;
 	}
 	
@@ -153,7 +155,7 @@ public class MemeConverter
 		{
 			builder.append(String.format(
 					// rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\"
-					"  <memeImage>\"%s\"</memeImage>\n",
+					"  <memeImage>%s</memeImage>\n",
 					url));
 		}
 		// Related Meme URLs
