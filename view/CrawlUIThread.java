@@ -42,7 +42,6 @@ class CrawlUIThread implements Runnable
 			try
 			{
 				urls = grabbedURLs.get();
-				System.out.println("There are " + urls.length + " memes in the HTML file.");
 				urls = Arrays.copyOfRange(urls, startIndex, endIndex);
 			}
 			catch (InterruptedException e)
@@ -59,13 +58,15 @@ class CrawlUIThread implements Runnable
 		
 		Future<Meme[]> crawler = entry.getExecutorService().submit(new MemeCrawler(delay, urls));
 		
+		double approximateTimeToCrawlOneMeme = 2.4;
+		//int expectedDuration = (int)Math.ceil(approximateTimeToCrawlOneMeme * (urls.length + delay/1000));
 		int expectedDuration = (int) ((delay/1000.0 + 0.5) * (endIndex - startIndex + 1));
 		Platform.runLater(() -> new WaitPopup(expectedDuration, startIndex, endIndex));
 		
 		Meme[] memes = null;
 		try
 		{
-			memes = crawler.get(); // This is a blocking call
+			memes = crawler.get();
 		}
 		catch (InterruptedException | ExecutionException e)
 		{
@@ -73,10 +74,7 @@ class CrawlUIThread implements Runnable
 			Platform.runLater(() -> new ErrorPopup(e.getMessage() + "\nError crawling memes (called from CrawlUIThread)."));
 		}
 		
-		// Remove null memes (if we encountered an error)
-		final Meme[] memesFinal = Arrays.stream(memes)
-								.filter(meme -> meme != null)
-								.toArray(Meme[]::new);
+		final Meme[] memesFinal = memes;
 		
 		Platform.runLater(() ->
 		{

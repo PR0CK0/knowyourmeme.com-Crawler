@@ -1,17 +1,112 @@
 package model;
 
 public class MemeConverter
-{
-	// Disable instantiation (just like math classes)
-	private MemeConverter() {}
+{	
 	
+	// I want to clean up the names, doesnt really matter though
+	private static String mintIRI(String memeURL)
+	{
+		int loc = 0;
+		
+		try
+		{			
+			for(int i = 0; i < memeURL.length(); i++)
+			{
+				if (memeURL.charAt(i) == '/')
+				{
+					loc = i;
+				}
+			}
+			
+			String baseIRI = memeURL.substring(loc + 1, memeURL.length());
+	//		baseIRI = baseIRI.replace("-", "");
+			// meeeeeeeh
+			try
+			{
+				baseIRI = baseIRI.substring(0, 1).toUpperCase() + baseIRI.substring(1, baseIRI.length());			
+			}
+			catch (StringIndexOutOfBoundsException e)
+			{
+				
+			}
+			
+			for (int i = 0; i < baseIRI.length(); i++)
+			{
+				if (baseIRI.charAt(i) == '#')
+				{
+					baseIRI = baseIRI.substring(0, i);
+				}
+			}
+			
+			return baseIRI;
+		}
+		catch (Exception exc)
+		{
+			System.out.println(memeURL);
+		}
+		
+		return "";
+	}
+	
+	/***
+	 * Converts a given meme to a proper RDF for our Meme Ontology.
+	 * @param aMeme a meme to convert into RDF(XML).
+	 * @return a string in RDF(XML) format for the specified meme
+	 */
+	public String memeToRDF(Meme aMeme)
+	{
+		StringBuilder builder = new StringBuilder();
+		
+		// Remove spaces, keep it alphanumeric with underscore only to fit the RDF's XML
+//		String modifiedName = removeSpaces(sanitize(aMeme.getName()));
+				
+		writeMemeName(aMeme, builder);
+		writeRDFsLabel(aMeme, builder);
+		writeMemeCategory(aMeme, builder);
+		writeMemeCategories(aMeme, builder);
+		writeMemeContentOrigin(aMeme, builder);
+		
+		// Check if we have a valid year (-1 is unassigned)
+//		if(aMeme.getOriginYear() != -1)
+//		{
+		writeMemeContentOriginYear(aMeme, builder);
+//		}
+		
+		// Check if we have a meme origin (empty string is unassigned)
+//		if(!aMeme.getMemeOrigin().isEmpty())
+//		{
+		writeMemeOrigin(aMeme, builder);
+//		}
+		
+		// Check if we have a valid year (-1 is unassigned)
+//		if(aMeme.getMemeYear() != -1)
+//		{
+		writeMemeOriginYear(aMeme, builder);
+//		}
+		
+		writeMemeTags(aMeme, builder);
+		writeMemeBodyText(aMeme, builder);
+		writeMemeImageURLs(aMeme, builder);
+		// TODO this broke
+		writeRelatedMemes(aMeme, builder);
+		writeMemeURL(aMeme, builder);
+		writeIsDefinedBy(builder);
+		
+		// End XML element
+		builder.append("</owl:NamedIndividual>");
+		
+		return builder.toString();
+	}
+		
+	// new
+	// Meh, CSV can suck my balls, Kyle
 	/***
 	 * Converts a given meme to comma-separated values file (CSV).
 	 * It will export both assigned and unassigned data to the CSV.
 	 * @param aMeme a meme to convert into CSV
 	 * @return a string in CSV format for the specified meme
 	 */
-	public static String memeToCSV(Meme aMeme)
+	public String memeToCSV(Meme aMeme)
 	{
 		StringBuilder builder = new StringBuilder();
 		
@@ -115,7 +210,7 @@ public class MemeConverter
 	 * @param memes an array of memes to convert into CSV
 	 * @return a string in CSV format for the specified memes
 	 */
-	public static String memesToCSV(Meme... memes)
+	public String memesToCSV(Meme... memes)
 	{
 		StringBuilder builder = new StringBuilder();
 		
@@ -125,103 +220,165 @@ public class MemeConverter
 		// Add each meme sequentially
 		for(Meme meme : memes)
 		{
-			builder.append(MemeConverter.memeToCSV(meme)); // has \n at end by default
+			builder.append(memeToCSV(meme)); // has \n at end by default
 		}
 		
 		return builder.toString();
 	}
 	
-	/***
-	 * Converts a given meme to a proper RDF for our Meme Ontology.
-	 * It ensures that unassigned data is not included in the RDF.  
-	 * @param aMeme a meme to convert into RDF(XML).
-	 * @return a string in RDF(XML) format for the specified meme
-	 */
-	public static String memeToRDF(Meme aMeme)
+	private static final String ONTOLOGY_IRI = "http://erau-semantic-research.com/2020/memo/0.2/";
+	
+	private void writeIsDefinedBy(StringBuilder builder) 
 	{
-		StringBuilder builder = new StringBuilder();
-		
-		// Remove spaces, keep it alphanumeric with underscore only to fit the RDF's XML
-		String modifiedName = removeSpaces(sanitize(aMeme.getName()));
-		
-		// Start the XML with the name of the meme
 		builder.append(String.format(
-				"<owl:NamedIndividual rdf:about=\"%s#%sMeme\">\n",
-				ONTOLOGY_IRI,
-				modifiedName));
-		
-		// The type of resource of the entry (a meme)
+				"  <rdfs:isDefinedBy rdf:resource=\""+ ONTOLOGY_IRI + "\"/>\n"));
+	}
+
+	private void writeRelatedMemes(Meme aMeme, StringBuilder builder) 
+	{
+		for(String url : aMeme.getLinksInMemeText())
+		{
+			System.out.println(aMeme.getName());
+			
+			// TODO changed to rdf resource
+			builder.append(String.format(
+					"  <relatedMeme rdf:resource=\"" + ONTOLOGY_IRI + "%sMeme\"/>\n",
+					mintIRI(url)));
+		}
+	}
+
+	private void writeMemeImageURLs(Meme aMeme, StringBuilder builder)
+	{
+		for(String url : aMeme.getImageLinks())
+		{
+			// ampersand in owl breaks parser
+			if (url.contains("&"))
+			{
+				continue;
+			}
+			
+			builder.append(String.format(
+					"  <memeImage>\"%s\"</memeImage>\n",
+					url));
+		}
+	}
+
+	private void writeMemeBodyText(Meme aMeme, StringBuilder builder)
+	{
 		builder.append(String.format(
-				"\t<rdf:type rdf:resource=\"%s#Meme\"/>\n",
-				ONTOLOGY_IRI));
-		
-		// Syntax Tags (called Categories)
-		for(String syntaxTag : aMeme.getCategories())
-		{
-			String modifiedCategory = removeSpaces(sanitize(syntaxTag));
-			builder.append(String.format("\t<syntaxTag rdf:resource=\"%s#%sSyntaxTag\"/>\n",
-					ONTOLOGY_IRI,
-					modifiedCategory));
-		}
-		
-		// Check if we have a type (empty string is unassigned)
-		if(!aMeme.getType().isEmpty())
-		{
-			String type = sanitize(aMeme.getType());
-			builder.append(String.format(
-					"\t<memeType rdf:resource=\"%s#%sType\"/>\n",
-					ONTOLOGY_IRI,
-					type));
-		}
-		
-		// Check if we have a content origin (empty string is unassigned)
-		for(String contentOrigin : aMeme.getContentOrigin())
-		{
-			String modifiedContentOrigin = sanitize(contentOrigin);
-			builder.append(String.format(
-					"\t<contentOrigin rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</contentOrigin>\n",
-					modifiedContentOrigin));
-		}
-		
-		// Check if we have a valid year (-1 is unassigned)
-		if(aMeme.getOriginYear() != -1)
-		{
-			builder.append(String.format(
-					"\t<contentYear rdf:datatype=\"http://www.w3.org/2001/XMLSchema#positiveInteger\">%d</contentYear>\n",
-					aMeme.getOriginYear()));
-		}
-		
-		
-		// Check if we have a meme origin (empty string is unassigned)
-		if(!aMeme.getMemeOrigin().isEmpty())
-		{
-			String memeOrigin = sanitize(aMeme.getMemeOrigin());
-			builder.append(String.format(
-					"\t<memeOrigin rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</memeOrigin>\n",
-					memeOrigin));
-		}
-		
-		// Check if we have a valid year (-1 is unassigned)
-		if(aMeme.getMemeYear() != -1)
-		{
-			builder.append(String.format(
-					"\t<memeYear rdf:datatype=\"http://www.w3.org/2001/XMLSchema#positiveInteger\">%d</memeYear>\n",
-					aMeme.getMemeYear()));
-		}
-		
-		// Semantic Tags (called Tags)
+				"  <textRepresentation>%s</textRepresentation>\n",
+				sanitize(aMeme.getMemeText())));
+	}
+
+	private void writeMemeTags(Meme aMeme, StringBuilder builder)
+	{
 		for(String semanticTag : aMeme.getTags())
 		{
 			String modifiedTag = sanitize(semanticTag);
 			builder.append(String.format(
-					"\t<semanticTag rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">%s</semanticTag>\n",
-					modifiedTag));
+					"  <tag>%s</tag>\n",
+					sanitize(modifiedTag)));
 		}
+	}
+
+	private void writeMemeOriginYear(Meme aMeme, StringBuilder builder) 
+	{
+		builder.append(String.format(
+				"  <memeYear>%d</memeYear>\n",
+				aMeme.getMemeYear()));
+	}
+
+	private void writeMemeOrigin(Meme aMeme, StringBuilder builder)
+	{
+		String memeOrigin = sanitize(aMeme.getMemeOrigin());
+		builder.append(String.format(
+				"  <memeOrigin>%s</memeOrigin>\n",
+				memeOrigin));
+	}
+
+	private void writeMemeContentOriginYear(Meme aMeme, StringBuilder builder) 
+	{
+		builder.append(String.format(
+					"  <contentYear>%d</contentYear>\n",
+					aMeme.getOriginYear()));
+	}
+
+	private void writeMemeContentOrigin(Meme aMeme, StringBuilder builder) 
+	{
+		for(String contentOrigin : aMeme.getContentOrigin())
+		{
+			String modifiedContentOrigin = sanitize(contentOrigin);
+			builder.append(String.format(
+					"  <contentOrigin>%s</contentOrigin>\n",
+					modifiedContentOrigin));
+		}
+	}
+
+	private void writeMemeCategories(Meme aMeme, StringBuilder builder) 
+	{
+		for(String syntaxTag : aMeme.getCategories())
+		{
+			String modifiedCategory = removeSpaces(sanitize(syntaxTag));
+			builder.append(String.format("  <hasCategorySpecification rdf:resource=\"http://erau-semantic-research.com/2020/memo/0.2/%sCategorySpecification\"/>\n",
+					sanitize(modifiedCategory)));
+		}
+	}
+
+	private void writeMemeURL(Meme aMeme, StringBuilder builder) 
+	{
+		builder.append(String.format(
+				"  <memeURL>\"%s\"</memeURL>\n",
+				aMeme.getMemeURL()));
+	}
+
+	private void writeRDFsLabel(Meme aMeme, StringBuilder builder) 
+	{
+		builder.append(String.format(
+				"  <rdfs:label xml:lang=\"en\">%s</rdfs:label>\n",
+				sanitize(aMeme.getName())));
+	}
+
+	private static void writeMemeName(Meme aMeme, StringBuilder builder) 
+	{
+		builder.append(String.format(
+				"<owl:NamedIndividual rdf:about=\""+ ONTOLOGY_IRI + "%sMeme\">\n",
+				mintIRI(aMeme.getMemeURL())));
+	}
+
+	private void writeMemeCategory(Meme aMeme, StringBuilder builder) 
+	{
+		final String prefix = "  <rdf:type rdf:resource=\"" + ONTOLOGY_IRI;
 		
-		// End XML element
-		builder.append("</owl:NamedIndividual>\n");
-		
-		return builder.toString();
+		if (aMeme.getMemeURL().contains("cultures"))
+		{
+			builder.append(String.format(
+					prefix + "CultureMemeCategory\"/>\n"));
+		}
+		else if (aMeme.getMemeURL().contains("events"))
+		{
+			builder.append(String.format(
+					prefix + "EventMemeCategory\"/>\n"));
+		}
+		else if (aMeme.getMemeURL().contains("people"))
+		{
+			builder.append(String.format(
+					prefix + "PeopleMemeCategory\"/>\n"));
+		}
+		else if (aMeme.getMemeURL().contains("sites"))
+		{
+			builder.append(String.format(
+					prefix + "SiteMemeCategory\"/>\n"));
+		}
+		else if (aMeme.getMemeURL().contains("sites"))
+		{
+			builder.append(String.format(
+					prefix + "SubcultureMemeCategory\"/>\n"));
+		}
+		else
+		{
+			builder.append(String.format(
+					prefix + "MemeMemeCategory\"/>\n"));
+		}
 	}
 	
 	/***
@@ -230,7 +387,7 @@ public class MemeConverter
 	 * @param memes an array of memes to convert into RDF
 	 * @return a string in RDF(XML) format for the specified meme
 	 */
-	public static String memesToRDF(Meme... memes)
+	public String memesToRDF(Meme... memes)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -238,7 +395,7 @@ public class MemeConverter
 		for(int i = 0; i < memes.length; i++)
 		{
 			Meme meme = memes[i];
-			builder.append(MemeConverter.memeToRDF(meme)); // has \n at end by default
+			builder.append(memeToRDF(meme)); // has \n at end by default
 			
 			// Add new lines only if not the last element
 			if(i != memes.length - 1)
@@ -250,17 +407,17 @@ public class MemeConverter
 		return builder.toString();
 	}
 	
-	private static String removeSpaces(String s)
+	private String removeSpaces(String s)
 	{
 		return s.replaceAll("\\s", "").trim();
 	}
 	
-	private static String onlyAlphanumeric(String s)
+	private String onlyAlphanumeric(String s)
 	{
 		return s.replaceAll("[^a-zA-Z0-9_ ]", "").trim();
 	}
 	
-	private static String fixAmpersand(String s)
+	private String fixAmpersand(String s)
 	{
 		return s.replaceAll("&", " and ").trim();
 	}
@@ -291,10 +448,17 @@ public class MemeConverter
 		return result;
 	}
 	
-	private static String sanitize(String s)
+	private String sanitize(String s)
 	{
 		return removeHTML(fixAmpersand(onlyAlphanumeric(s)));
 	}
-	
-	private static final String ONTOLOGY_IRI = "http://erau.edu/ontology/meme.owl";
 }
+
+// Check if we have a type (empty string is unassigned)
+//if(!aMeme.getType().isEmpty())
+//{
+//	String type = sanitize(aMeme.getType());
+//	builder.append(String.format(
+//			"  <hasMemeType rdf:resource=\"http://erau-semantic-research.com/2020/memo/0.2/%sMemeType\"/>\n",
+//			type));
+//}

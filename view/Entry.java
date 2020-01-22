@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -61,7 +60,7 @@ public class Entry extends BorderPane
 		tfMemeYear = new TextField("0");
 		tfMemeYear.setMaxWidth(50);
 		
-		tfDelay = new TextField("30000");
+		tfDelay = new TextField("2000");
 		tfStartIndex = new TextField("0");
 		tfEndIndex = new TextField("500");
 		tfDelay.setPromptText("# of ms delay");
@@ -116,6 +115,10 @@ public class Entry extends BorderPane
 		// CENTER
 		HBox hboxCenter = new HBox(lvMemes, tpFormats);
 		taPlainText.setEditable(false);
+		
+		// new
+		taPlainText.setWrapText(true);
+		
 		spPlainText.setFitToWidth(true);
 		spPlainText.setFitToHeight(true);
 		taRDF.setEditable(false);
@@ -135,7 +138,7 @@ public class Entry extends BorderPane
 				Platform.runLater(() ->
 				{
 					super.updateItem(item, empty);
-					if(empty || item == null)
+					if(empty)
 					{
 						setText(null);
 					}
@@ -241,11 +244,11 @@ public class Entry extends BorderPane
 				}
 				else if(tabIndex == 1) // RDF
 				{
-					exportString = MemeConverter.memesToRDF(meme);
+					exportString = mc.memesToRDF(meme);
 				}
 				else if(tabIndex == 2) // CSV
 				{
-					exportString = MemeConverter.memesToCSV(meme);
+					exportString = mc.memesToCSV(meme);
 				}
 				
 				writer.println(exportString);
@@ -288,11 +291,11 @@ public class Entry extends BorderPane
 				String exportString = "";
 				if(tabIndex == 1) // RDF
 				{
-					exportString = MemeConverter.memesToRDF(lvMemes.getItems().toArray(new Meme[0]));
+					exportString = mc.memesToRDF(lvMemes.getItems().toArray(new Meme[0]));
 				}
 				else if(tabIndex == 2 || tabIndex == 0) // CSV
 				{
-					exportString = MemeConverter.memesToCSV(lvMemes.getItems().toArray(new Meme[0]));
+					exportString = mc.memesToCSV(lvMemes.getItems().toArray(new Meme[0]));
 				}
 				
 				writer.println(exportString);
@@ -317,11 +320,11 @@ public class Entry extends BorderPane
 		}
 		else if(tabIndex == 1) // RDF
 		{
-			exportString = MemeConverter.memeToRDF(meme);
+			exportString = mc.memeToRDF(meme);
 		}
 		else if(tabIndex == 2) // CSV
 		{
-			exportString = MemeConverter.memeToCSV(meme);
+			exportString = mc.memeToCSV(meme);
 		}
 		
 		Toolkit.getDefaultToolkit()
@@ -372,7 +375,7 @@ public class Entry extends BorderPane
 		{
 			try
 			{
-				Integer.valueOf(newValue);
+				int a = Integer.valueOf(newValue);
 			}
 			catch(NumberFormatException e)
 			{
@@ -407,7 +410,7 @@ public class Entry extends BorderPane
 		{
 			try
 			{
-				Integer.valueOf(newValue);
+				int a = Integer.valueOf(newValue);
 			}
 			catch(NumberFormatException e)
 			{
@@ -425,8 +428,8 @@ public class Entry extends BorderPane
 	{
 		Meme meme = getSelectedMeme();
 		taPlainText.setText(meme.toString());
-		taRDF.setText(MemeConverter.memeToRDF(meme));
-		taCSV.setText(MemeConverter.memeToCSV(meme));
+		taRDF.setText(mc.memeToRDF(meme));
+		taCSV.setText(mc.memeToCSV(meme));
 	}
 	
 	public Label getLblURL()
@@ -529,6 +532,8 @@ public class Entry extends BorderPane
 		return executorService;
 	}
 
+	private MemeConverter mc = new MemeConverter();
+	
 	private Label lblURL;
 	private TextField tfURL;
 	private Button btCrawl;
