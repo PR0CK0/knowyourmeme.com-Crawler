@@ -11,4 +11,4 @@ Make sure to include the jsoup.jar to your buildpath.
 everyConfirmedMeme.html is the html file containing links to every confirmed meme (as of February 2019) on knowyourmeme.com. This file was attained by navigating to the knowyourmeme.com page where all confirmed memes were listed and scrolling down until all of them were loaded, then copying the html. A bit brutish, but it sufficed.
 
 # A Word of Caution
-It should be noted that if this project is intended to be used some time well beyond February 2019, the authors cannot guarantee that the HTML-parsing code is correct. The website structure may have changed in that time. Refer to classes MemeCrawler, MemeURLGrabber and MemeBODYCrawlerUpdated to see the HTML-parsing code.
+It should be noted that if this project is intended to be used some time well beyond January 2020, the authors cannot guarantee that the HTML-parsing code is correct. The website structure may have changed in that time. Refer to classes MemeCrawler, MemeURLGrabber and MemeBODYCrawlerUpdated to see the HTML-parsing code.
