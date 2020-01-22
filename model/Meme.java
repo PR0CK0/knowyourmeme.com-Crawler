@@ -174,9 +174,9 @@ public class Meme
 	
 	private String name = "";
 	private String[] categories = {};
-	private int contentYear = -1;
+	private int contentYear = 9999;
 	private String[] contentOrigin = {};
-	private int memeYear = -1;
+	private int memeYear = 9999;
 	private String memeOrigin = "";
 	private String[] tags = {};
 	private String type = "Unassigned";

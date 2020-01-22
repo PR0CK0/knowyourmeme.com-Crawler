@@ -16,7 +16,7 @@ public class MemeURLGrabber implements Callable<String[]>
 	{
 		try
 		{						
-			File input = new File("resources/"+fileName);
+			File input = new File(fileName);
 			htmlPage = Jsoup.parse(input, "UTF-8", "http://example.com/");
 			getMemeURLSFromPage();
 		}

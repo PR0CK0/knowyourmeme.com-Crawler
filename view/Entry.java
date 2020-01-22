@@ -244,11 +244,11 @@ public class Entry extends BorderPane
 				}
 				else if(tabIndex == 1) // RDF
 				{
-					exportString = MemeConverter.memesToRDF(meme);
+					exportString = mc.memesToRDF(meme);
 				}
 				else if(tabIndex == 2) // CSV
 				{
-					exportString = MemeConverter.memesToCSV(meme);
+					exportString = mc.memesToCSV(meme);
 				}
 				
 				writer.println(exportString);
@@ -291,11 +291,11 @@ public class Entry extends BorderPane
 				String exportString = "";
 				if(tabIndex == 1) // RDF
 				{
-					exportString = MemeConverter.memesToRDF(lvMemes.getItems().toArray(new Meme[0]));
+					exportString = mc.memesToRDF(lvMemes.getItems().toArray(new Meme[0]));
 				}
 				else if(tabIndex == 2 || tabIndex == 0) // CSV
 				{
-					exportString = MemeConverter.memesToCSV(lvMemes.getItems().toArray(new Meme[0]));
+					exportString = mc.memesToCSV(lvMemes.getItems().toArray(new Meme[0]));
 				}
 				
 				writer.println(exportString);
@@ -320,11 +320,11 @@ public class Entry extends BorderPane
 		}
 		else if(tabIndex == 1) // RDF
 		{
-			exportString = MemeConverter.memeToRDF(meme);
+			exportString = mc.memeToRDF(meme);
 		}
 		else if(tabIndex == 2) // CSV
 		{
-			exportString = MemeConverter.memeToCSV(meme);
+			exportString = mc.memeToCSV(meme);
 		}
 		
 		Toolkit.getDefaultToolkit()
@@ -428,8 +428,8 @@ public class Entry extends BorderPane
 	{
 		Meme meme = getSelectedMeme();
 		taPlainText.setText(meme.toString());
-		taRDF.setText(MemeConverter.memeToRDF(meme));
-		taCSV.setText(MemeConverter.memeToCSV(meme));
+		taRDF.setText(mc.memeToRDF(meme));
+		taCSV.setText(mc.memeToCSV(meme));
 	}
 	
 	public Label getLblURL()
@@ -532,6 +532,8 @@ public class Entry extends BorderPane
 		return executorService;
 	}
 
+	private MemeConverter mc = new MemeConverter();
+	
 	private Label lblURL;
 	private TextField tfURL;
 	private Button btCrawl;

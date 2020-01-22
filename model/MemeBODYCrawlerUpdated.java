@@ -72,6 +72,7 @@ public class MemeBODYCrawlerUpdated
 			}
 		}
 		
+		meme.setContentOrigin(new String[] {UNKNOWN_VALUE});
 		findContentOriginYearWithNoSite(textToCheck);
 	}
 	
@@ -92,6 +93,7 @@ public class MemeBODYCrawlerUpdated
 			}
 		}
 		
+		meme.setMemeOrigin(UNKNOWN_VALUE);
 		findMemeOriginYearWithNoSite(textToCheck);
 	}
 	
@@ -252,4 +254,6 @@ public class MemeBODYCrawlerUpdated
 	
 	private final int CURRENT_YEAR = 2020;
 	private final int EARLIEST_MEME = 1400;
+	
+	private final String UNKNOWN_VALUE = "Unknown";
 }
