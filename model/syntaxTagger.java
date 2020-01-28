@@ -2,7 +2,6 @@ package model;
 
 public class syntaxTagger
 {
-	// all categories in knowyourmeme.com, printed in rdf form
 	public static void main(String[] args)
 	{
 		String[] cultures = {"Art", "Country", "Food", "Movement", "Music", "Religion", "Sport", "Technology"};
@@ -21,9 +20,10 @@ public class syntaxTagger
 		String[] subcultures ={"Album", "Anime", "Book", "Cartoon", "ComicBook", "Company",
 				"Fauna", "Fetish", "Film", "Manga", "Podcast", "Product", "TVShow", "Theater", "VideoGame", "WebSeries", "Webcomic"};
 		
-		String prefix = "<owl:NamedIndividual rdf:about=\"http://erau-semantic-research.com/2020/memo/0.2/";
-		String suffix = "CategorySpecification\">\n  <rdf:type rdf:resource=\"http://erau-semantic-research.com/2019/memo/0.1/CategorySpecification\"/>\n"
-				+ "  <rdfs:isDefinedBy rdf:resource=\"http://erau-semantic-research.com/2020/memo/0.2/\"/>\n</owl:NamedIndividual>";
+		//http://erau-semantic-research.com/2019/memo/1.0/
+		String prefix = "<owl:NamedIndividual rdf:about=\"http://erau-semantic-research.com/2019/memo/1.0/";
+		String suffix = "CategorySpecification\">\n  <rdf:type rdf:resource=\"http://erau-semantic-research.com/2019/memo/1.0/CategorySpecification\"/>\n"
+				+ "  <rdf:isDefinedBy rdf:resource=\"http://erau-semantic-research.com/2019/memo/1.0/\"/>\n</owl:NamedIndividual>";
 		
 	    for (int i = 0; i < subcultures.length; i++)
 	    {

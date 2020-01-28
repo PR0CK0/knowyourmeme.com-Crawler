@@ -226,7 +226,7 @@ public class MemeConverter
 		return builder.toString();
 	}
 	
-	private static final String ONTOLOGY_IRI = "http://erau-semantic-research.com/2020/memo/0.2/";
+	private static final String ONTOLOGY_IRI = "http://erau-semantic-research.com/2020/memo/1.0/";
 	
 	private void writeIsDefinedBy(StringBuilder builder) 
 	{
@@ -319,7 +319,7 @@ public class MemeConverter
 		for(String syntaxTag : aMeme.getCategories())
 		{
 			String modifiedCategory = removeSpaces(sanitize(syntaxTag));
-			builder.append(String.format("  <hasCategorySpecification rdf:resource=\"http://erau-semantic-research.com/2020/memo/0.2/%sCategorySpecification\"/>\n",
+			builder.append(String.format("  <hasCategorySpecification rdf:resource=\"http://erau-semantic-research.com/2020/memo/1.0/%sCategorySpecification\"/>\n",
 					sanitize(modifiedCategory)));
 		}
 	}
@@ -459,6 +459,6 @@ public class MemeConverter
 //{
 //	String type = sanitize(aMeme.getType());
 //	builder.append(String.format(
-//			"  <hasMemeType rdf:resource=\"http://erau-semantic-research.com/2020/memo/0.2/%sMemeType\"/>\n",
+//			"  <hasMemeType rdf:resource=\"http://erau-semantic-research.com/2020/memo/1.0/%sMemeType\"/>\n",
 //			type));
 //}
